@@ -28,6 +28,13 @@ h1 {
     background-color: #00f;
 }
 
+.user {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    background-color: #800080;
+}
+
 h2 {
     text-align: center;
     margin: 350px auto 0 auto;
