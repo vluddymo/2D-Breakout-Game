@@ -1,10 +1,18 @@
 const grid = document.querySelector(".grid");
 const blockWidth = 100;
 const blockHeight = 20;
-const boardWidth = 560 - blockWidth;
+const boardWidth = 560;
+const boardHeight = 300;
+const ballDiameter = 20;
+
+let xDirection = 2;
+let yDirection = 2;
 
 const userStart = 230;
 let currentPosition = userStart;
+
+const ballStart = [270, 30];
+let currentBallPosition = ballStart;
 
 // Create Block
 class Block {
@@ -70,7 +78,7 @@ function moveUser(e) {
       }
       break;
     case "ArrowRight":
-      if (currentPosition < boardWidth) {
+      if (currentPosition < boardWidth - blockWidth) {
         currentPosition += 10;
         drawUser();
       }
@@ -81,6 +89,39 @@ function moveUser(e) {
 document.addEventListener("keydown", moveUser);
 
 // Add ball
-const ball = document.createElement('div')
-ball.classList.add('ball')
-grid.appendChild(ball)
+const ball = document.createElement("div");
+ball.classList.add("ball");
+drawBall();
+grid.appendChild(ball);
+
+// Draw ball
+function drawBall() {
+  ball.style.left = currentBallPosition[0] + "px";
+  ball.style.bottom = currentBallPosition[1] + "px";
+}
+
+// Move ball
+function moveBall() {
+  currentBallPosition[0] += xDirection;
+  currentBallPosition[1] += yDirection;
+  drawBall();
+  checkForBoundsCollisions();
+}
+
+setInterval(moveBall, 30);
+
+// Check for collisions with bounds
+function checkForBoundsCollisions() {
+  if (
+    currentBallPosition[1] >= boardHeight - ballDiameter ||
+    currentBallPosition[1] <= 30
+  ) {
+    yDirection = -yDirection;
+  }
+  if (
+    currentBallPosition[0] >= boardWidth - ballDiameter ||
+    currentBallPosition[0] <= 0
+  ) {
+    xDirection = -xDirection;
+  }
+}
