@@ -36,6 +36,14 @@ h1 {
     background-color: #800080;
 }
 
+.ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #f00;
+}
+
 h2 {
     text-align: center;
     margin: 350px auto 0 auto;
