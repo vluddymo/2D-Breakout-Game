@@ -1,0 +1,30 @@
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: #d19781;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px auto;
+    color: #9e72e4;
+}
+
+.grid {
+    width: 600px;
+    height: 300px;
+    border: 1px solid black;
+    left: calc(50% - (602px/2));
+    background-color: #fff8dc;
+    position: absolute
+}
+
+h2 {
+    text-align: center;
+    margin: 350px auto 0 auto;
+    color: #9e72e4;
+}
+
+
