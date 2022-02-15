@@ -13,12 +13,19 @@ h1 {
 }
 
 .grid {
-    width: 600px;
+    width: 560px;
     height: 300px;
     border: 1px solid black;
-    left: calc(50% - (602px/2));
+    left: calc(50% - (562px/2));
     background-color: #fff8dc;
     position: absolute
+}
+
+.block {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    background-color: #00f;
 }
 
 h2 {
