@@ -4,14 +4,23 @@ const blockHeight = 20;
 const boardWidth = 560;
 const boardHeight = 300;
 const ballDiameter = 20;
+const ballRadius = ballDiameter / 2;
+let timerId;
 
 let xDirection = 2;
 let yDirection = 2;
 
+// up + right = 6 || up +left = 2 || down +right = -2 || down + left = -6
+let directionCode;
+
+function calculateDirectionCode(){
+  directionCode = xDirection + ( 2 * yDirection)
+}
+
 const userStart = 230;
 let currentPosition = userStart;
 
-const ballStart = [270, 30];
+const ballStart = [270, 32];
 let currentBallPosition = ballStart;
 
 // Create Block
@@ -45,7 +54,7 @@ const blocks = [
 
 // Draw my Block
 function addBlock() {
-  for (i = 0; i < blocks.length; i++) {
+  for (let i = 0; i < blocks.length; i++) {
     const block = document.createElement("div");
     block.classList.add("block");
     block.style.left = blocks[i].bottomLeft[0] + "px";
@@ -105,23 +114,76 @@ function moveBall() {
   currentBallPosition[0] += xDirection;
   currentBallPosition[1] += yDirection;
   drawBall();
-  checkForBoundsCollisions();
+  checkForCollisions();
 }
 
-setInterval(moveBall, 30);
+timerId = setInterval(moveBall, 30);
 
-// Check for collisions with bounds
-function checkForBoundsCollisions() {
-  if (
-    currentBallPosition[1] >= boardHeight - ballDiameter ||
-    currentBallPosition[1] <= 30
-  ) {
-    yDirection = -yDirection;
+function checkForCollisions() {
+  checkForBlockCollisions();
+  checkForWallCollisions();
+  checkForUserCollision();
+  checkForGameOver();
+}
+
+function checkForBlockCollisions(){
+   for ( let i = 0; i < blocks.length; i++) {
+      if (
+        ((currentBallPosition[0] - ballDiameter) >= blocks[i].bottomLeft[0] &&
+        currentBallPosition[0] < blocks[i].bottomRight[0]) &&
+        ((currentBallPosition[1] + ballDiameter) > blocks[i].bottomLeft[1] &&
+        currentBallPosition[1] < blocks[i].topLeft[1])
+      ) {
+        console.log(`collision with block ${i}`);
+        const allBlocks = Array.from(document.querySelectorAll('.block'))
+        allBlocks[i].classList.remove('block')
+        blocks.splice(i, 1)
+        calculateDirectionCode();
+      }
   }
+}
+
+
+function checkForWallCollisions(){
   if (
     currentBallPosition[0] >= boardWidth - ballDiameter ||
-    currentBallPosition[0] <= 0
+    currentBallPosition[0] < 0
   ) {
     xDirection = -xDirection;
+    calculateDirectionCode();
+    return;
   }
+  if (currentBallPosition[1] >= boardHeight - ballDiameter) {
+    yDirection = -yDirection;
+    calculateDirectionCode();
+    return
+  }
+}
+
+function checkForUserCollision(){
+  if (currentBallPosition[1] >= 30) return
+  if (
+    currentBallPosition[0] - ballDiameter >= currentPosition &&
+    currentBallPosition[0] <= currentPosition + blockWidth
+  ) {
+    yDirection = -yDirection;
+    calculateDirectionCode();
+    return;
+  }
+  if (
+    (currentBallPosition[0] + ballDiameter === currentPosition &&
+      directionCode === -2) ||
+    (currentBallPosition[0] === currentPosition + blockWidth &&
+      directionCode === -6)
+  ) {
+    xDirection = -xDirection;
+    calculateDirectionCode();
+    return;
+  }
+}
+
+function checkForGameOver(){
+  if (currentBallPosition[1] > 0) return
+  clearInterval(timerId);
+  alert("Game Over");
 }
