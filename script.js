@@ -1,10 +1,17 @@
 const grid = document.querySelector(".grid");
-const blockWidth = 100;
-const blockHeight = 20;
-const boardWidth = 560;
-const boardHeight = 300;
-const ballDiameter = 20;
-const ballRadius = ballDiameter / 2;
+
+const BOARD_WIDTH = 560;
+const BOARD_HEIGHT = 300;
+
+const BLOCK_WIDTH = 100;
+const BLOCK_HEIGHT = 20;
+
+const BALL_DIAMETER = 20;
+const BALL_START = [270, 32];
+
+const USER_START = 230;
+const USER_Y_TRESHOLD = 30;
+
 let timerId;
 
 let xDirection = 2;
@@ -13,23 +20,21 @@ let yDirection = 2;
 // up + right = 6 || up +left = 2 || down +right = -2 || down + left = -6
 let directionCode;
 
-function calculateDirectionCode(){
-  directionCode = xDirection + ( 2 * yDirection)
+function calculateDirectionCode() {
+  directionCode = xDirection + 2 * yDirection;
 }
 
-const userStart = 230;
-let currentPosition = userStart;
+let currentPosition = USER_START;
 
-const ballStart = [270, 32];
-let currentBallPosition = ballStart;
+let currentBallPosition = BALL_START;
 
 // Create Block
 class Block {
   constructor(xAxis, yAxis) {
     this.bottomLeft = [xAxis, yAxis];
-    this.bottomRight = [xAxis + blockWidth, yAxis];
-    this.topLeft = [xAxis, yAxis + blockHeight];
-    this.topRight = [xAxis + blockWidth, yAxis + blockHeight];
+    this.bottomRight = [xAxis + BLOCK_WIDTH, yAxis];
+    this.topLeft = [xAxis, yAxis + BLOCK_HEIGHT];
+    this.topRight = [xAxis + BLOCK_WIDTH, yAxis + BLOCK_HEIGHT];
   }
 }
 
@@ -87,7 +92,7 @@ function moveUser(e) {
       }
       break;
     case "ArrowRight":
-      if (currentPosition < boardWidth - blockWidth) {
+      if (currentPosition < BOARD_WIDTH - BLOCK_WIDTH) {
         currentPosition += 10;
         drawUser();
       }
@@ -113,6 +118,7 @@ function drawBall() {
 function moveBall() {
   currentBallPosition[0] += xDirection;
   currentBallPosition[1] += yDirection;
+  calculateDirectionCode();
   drawBall();
   checkForCollisions();
 }
@@ -126,64 +132,60 @@ function checkForCollisions() {
   checkForGameOver();
 }
 
-function checkForBlockCollisions(){
-   for ( let i = 0; i < blocks.length; i++) {
-      if (
-        ((currentBallPosition[0] - ballDiameter) >= blocks[i].bottomLeft[0] &&
-        currentBallPosition[0] < blocks[i].bottomRight[0]) &&
-        ((currentBallPosition[1] + ballDiameter) > blocks[i].bottomLeft[1] &&
-        currentBallPosition[1] < blocks[i].topLeft[1])
-      ) {
-        console.log(`collision with block ${i}`);
-        const allBlocks = Array.from(document.querySelectorAll('.block'))
-        allBlocks[i].classList.remove('block')
-        blocks.splice(i, 1)
-        calculateDirectionCode();
-      }
+function checkForBlockCollisions() {
+  for (let i = 0; i < blocks.length; i++) {
+    if (
+      currentBallPosition[0] - BALL_DIAMETER >= blocks[i].bottomLeft[0] &&
+      currentBallPosition[0] < blocks[i].bottomRight[0] &&
+      currentBallPosition[1] + BALL_DIAMETER > blocks[i].bottomLeft[1] &&
+      currentBallPosition[1] < blocks[i].topLeft[1]
+    ) {
+      console.log(`collision with block ${i}`);
+      const allBlocks = Array.from(document.querySelectorAll(".block"));
+      allBlocks[i].classList.remove("block");
+      blocks.splice(i, 1);
+      yDirection = -yDirection;
+    }
   }
 }
 
+function checkForWallCollisions() {
+  const isCrashedInLeftWall = currentBallPosition[0] < 0;
+  const isCrashedInRightWall = currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER;
+  const isCrashedInTopWall = currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER;
 
-function checkForWallCollisions(){
-  if (
-    currentBallPosition[0] >= boardWidth - ballDiameter ||
-    currentBallPosition[0] < 0
-  ) {
-    xDirection = -xDirection;
-    calculateDirectionCode();
-    return;
-  }
-  if (currentBallPosition[1] >= boardHeight - ballDiameter) {
-    yDirection = -yDirection;
-    calculateDirectionCode();
-    return
-  }
+  if (!isCrashedInLeftWall && !isCrashedInRightWall && !isCrashedInTopWall) return;
+  if (!isCrashedInTopWall) return (xDirection = -xDirection);
+  yDirection = -yDirection;
 }
 
-function checkForUserCollision(){
-  if (currentBallPosition[1] >= 30) return
+function checkForUserCollision() {
+  if (directionCode > 0) return;
+  if (currentBallPosition[1] > USER_Y_TRESHOLD) return;
+
   if (
-    currentBallPosition[0] - ballDiameter >= currentPosition &&
-    currentBallPosition[0] <= currentPosition + blockWidth
+    currentBallPosition[1] === 30 &&
+    currentBallPosition[0] - BALL_DIAMETER >= currentPosition &&
+    currentBallPosition[0] <= currentPosition + BLOCK_WIDTH
   ) {
     yDirection = -yDirection;
-    calculateDirectionCode();
     return;
   }
   if (
-    (currentBallPosition[0] + ballDiameter === currentPosition &&
+    (currentBallPosition[1] < 30 &&
+      currentBallPosition[0] + BALL_DIAMETER === currentPosition &&
       directionCode === -2) ||
-    (currentBallPosition[0] === currentPosition + blockWidth &&
+    (currentBallPosition[1] < 30 &&
+      currentBallPosition[0] === currentPosition + BLOCK_WIDTH &&
       directionCode === -6)
   ) {
     xDirection = -xDirection;
-    calculateDirectionCode();
     return;
   }
 }
 
-function checkForGameOver(){
-  if (currentBallPosition[1] > 0) return
+function checkForGameOver() {
+  if (currentBallPosition[1] >= 0) return;
   clearInterval(timerId);
   alert("Game Over");
 }
