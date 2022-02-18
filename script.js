@@ -118,6 +118,7 @@ function drawBall() {
 function moveBall() {
   currentBallPosition[0] += xDirection;
   currentBallPosition[1] += yDirection;
+  drawUser();
   calculateDirectionCode();
   drawBall();
   checkForCollisions();
@@ -151,37 +152,40 @@ function checkForBlockCollisions() {
 
 function checkForWallCollisions() {
   const isCrashedInLeftWall = currentBallPosition[0] < 0;
-  const isCrashedInRightWall = currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER;
-  const isCrashedInTopWall = currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER;
+  const isCrashedInRightWall =
+    currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER;
+  const isCrashedInTopWall =
+    currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER;
 
-  if (!isCrashedInLeftWall && !isCrashedInRightWall && !isCrashedInTopWall) return;
+  if (!isCrashedInLeftWall && !isCrashedInRightWall && !isCrashedInTopWall)
+    return;
   if (!isCrashedInTopWall) return (xDirection = -xDirection);
   yDirection = -yDirection;
 }
 
-function checkForUserCollision() {
-  if (directionCode > 0) return;
-  if (currentBallPosition[1] > USER_Y_TRESHOLD) return;
+function userCollisionGuardClause() {
+  // Is ball within user block x-coordinates ? 
+  const isOnUserBlock =
+    currentBallPosition[0] + BALL_DIAMETER >= currentPosition &&
+    currentBallPosition[0] <= currentPosition + BLOCK_WIDTH;
 
-  if (
-    currentBallPosition[1] === 30 &&
-    currentBallPosition[0] - BALL_DIAMETER >= currentPosition &&
-    currentBallPosition[0] <= currentPosition + BLOCK_WIDTH
-  ) {
-    yDirection = -yDirection;
-    return;
-  }
-  if (
-    (currentBallPosition[1] < 30 &&
-      currentBallPosition[0] + BALL_DIAMETER === currentPosition &&
-      directionCode === -2) ||
-    (currentBallPosition[1] < 30 &&
-      currentBallPosition[0] === currentPosition + BLOCK_WIDTH &&
-      directionCode === -6)
-  ) {
-    xDirection = -xDirection;
-    return;
-  }
+  return (
+    directionCode > 0 ||
+    currentBallPosition[1] > USER_Y_TRESHOLD ||
+    !isOnUserBlock
+  ) 
+}
+
+function bounceOffUser(){
+// Deflection handling
+if (currentBallPosition[1] === USER_Y_TRESHOLD) return (yDirection = -yDirection);
+xDirection = -xDirection;
+}
+
+function checkForUserCollision() {
+if (userCollisionGuardClause()) return;
+console.log("im not guarded");
+bounceOffUser()
 }
 
 function checkForGameOver() {
