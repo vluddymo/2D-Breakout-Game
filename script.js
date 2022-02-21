@@ -184,7 +184,6 @@ xDirection = -xDirection;
 
 function checkForUserCollision() {
 if (userCollisionGuardClause()) return;
-console.log("im not guarded");
 bounceOffUser()
 }
 
