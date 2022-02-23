@@ -21,6 +21,12 @@ h1 {
     position: absolute
 }
 
+.grid::before {
+    width: 50px;
+    background-color: blue;
+    z-index: 10;
+}
+
 .block {
     position: absolute;
     width: 100px;
@@ -38,9 +44,9 @@ h1 {
 
 .ball {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
     background-color: #f00;
 }
 

@@ -6,7 +6,7 @@ const BOARD_HEIGHT = 300;
 const BLOCK_WIDTH = 100;
 const BLOCK_HEIGHT = 20;
 
-const BALL_DIAMETER = 20;
+const BALL_DIAMETER = 22;
 const BALL_START = [270, 32];
 
 const USER_START = 230;
@@ -133,20 +133,52 @@ function checkForCollisions() {
   checkForGameOver();
 }
 
-function checkForBlockCollisions() {
+function returnCollisionCase() {
   for (let i = 0; i < blocks.length; i++) {
     if (
-      currentBallPosition[0] - BALL_DIAMETER >= blocks[i].bottomLeft[0] &&
-      currentBallPosition[0] < blocks[i].bottomRight[0] &&
+      (currentBallPosition[0] + BALL_DIAMETER == blocks[i].bottomLeft[0] ||
+        currentBallPosition[0] == blocks[i].bottomRight[0]) &&
       currentBallPosition[1] + BALL_DIAMETER > blocks[i].bottomLeft[1] &&
       currentBallPosition[1] < blocks[i].topLeft[1]
     ) {
-      console.log(`collision with block ${i}`);
-      const allBlocks = Array.from(document.querySelectorAll(".block"));
-      allBlocks[i].classList.remove("block");
-      blocks.splice(i, 1);
-      yDirection = -yDirection;
+      console.log("right_left");
+      return { case: "right_left", block: i };
+    } else if (
+      currentBallPosition[0] + BALL_DIAMETER >= blocks[i].bottomLeft[0] &&
+      currentBallPosition[0] <= blocks[i].bottomRight[0] &&
+      (currentBallPosition[1] + BALL_DIAMETER == blocks[i].bottomLeft[1] ||
+        currentBallPosition[1] == blocks[i].topLeft[1])
+    ) {
+      console.log("top_bottom");
+      return { case: "top_bottom", block: i };
     }
+  }
+}
+
+function handleCollisionAction(i) {
+  console.log(`collision with block ${i}`);
+  const allBlocks = Array.from(document.querySelectorAll(".block"));
+  allBlocks[i].classList.remove("block");
+  blocks.splice(i, 1);
+}
+
+function checkForBlockCollisions() {
+  if (currentBallPosition[1] + BALL_DIAMETER < 210) return;
+  if (blocks.length == 0) return alert("You Won!")
+  if (returnCollisionCase() == undefined) return;
+
+  switch (returnCollisionCase().case) {
+    case "top_bottom":
+      yDirection = -yDirection;
+      handleCollisionAction(returnCollisionCase().block);
+      break;
+    case "right_left":
+      xDirection = -xDirection;
+      handleCollisionAction(returnCollisionCase().block);
+      break;
+    default:
+      console.log("nothing happened");
+      break;
   }
 }
 
@@ -164,7 +196,7 @@ function checkForWallCollisions() {
 }
 
 function userCollisionGuardClause() {
-  // Is ball within user block x-coordinates ? 
+  // Is ball within user block x-coordinates ?
   const isOnUserBlock =
     currentBallPosition[0] + BALL_DIAMETER >= currentPosition &&
     currentBallPosition[0] <= currentPosition + BLOCK_WIDTH;
@@ -173,18 +205,19 @@ function userCollisionGuardClause() {
     directionCode > 0 ||
     currentBallPosition[1] > USER_Y_TRESHOLD ||
     !isOnUserBlock
-  ) 
+  );
 }
 
-function bounceOffUser(){
-// Deflection handling
-if (currentBallPosition[1] === USER_Y_TRESHOLD) return (yDirection = -yDirection);
-xDirection = -xDirection;
+function bounceOffUser() {
+  // Deflection handling
+  if (currentBallPosition[1] === USER_Y_TRESHOLD)
+    return (yDirection = -yDirection);
+  xDirection = -xDirection;
 }
 
 function checkForUserCollision() {
-if (userCollisionGuardClause()) return;
-bounceOffUser()
+  if (userCollisionGuardClause()) return;
+  bounceOffUser();
 }
 
 function checkForGameOver() {
