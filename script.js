@@ -234,12 +234,10 @@ function checkForUserCollision() {
 function checkForGameOver() {
   if (currentBallPosition[1] >= 0) return;
   clearInterval(timerId);
-  alert("Game Over");
   presentScore();
 }
 function checkForGameWon(){
   if (blocks.length > 0) return;
-  alert("You Won!");
   clearInterval(timerId)
   presentScore()
 }
@@ -252,6 +250,7 @@ function presentScore(){
   finalScore.classList.add("final_score")
   finishDisplay.classList.add("finish")
   restartButton.innerHTML = "restart";
+  restartButton.addEventListener("click", () => document.location.reload())
   finalScore.innerHTML = score;
   finishDisplay.append(finalScore, restartButton);
   while (grid.firstChild) {
