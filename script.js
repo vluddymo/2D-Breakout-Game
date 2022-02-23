@@ -1,4 +1,5 @@
 const grid = document.querySelector(".grid");
+const scoreDisplay = document.querySelector(".score");
 
 const BOARD_WIDTH = 560;
 const BOARD_HEIGHT = 300;
@@ -11,6 +12,11 @@ const BALL_START = [270, 32];
 
 const USER_START = 230;
 const USER_Y_TRESHOLD = 30;
+
+const BLOCK_REWARD = 100;
+
+let score = 0;
+let multiplier = 1;
 
 let timerId;
 
@@ -160,6 +166,10 @@ function handleCollisionAction(i) {
   const allBlocks = Array.from(document.querySelectorAll(".block"));
   allBlocks[i].classList.remove("block");
   blocks.splice(i, 1);
+  score = score + (multiplier * BLOCK_REWARD)
+  scoreDisplay.innerHTML = score;
+  multiplier = multiplier + multiplier;
+
 }
 
 function checkForBlockCollisions() {
@@ -210,8 +220,10 @@ function userCollisionGuardClause() {
 
 function bounceOffUser() {
   // Deflection handling
-  if (currentBallPosition[1] === USER_Y_TRESHOLD)
-    return (yDirection = -yDirection);
+  if (currentBallPosition[1] === USER_Y_TRESHOLD) {
+    multiplier = 1;
+    return (yDirection = -yDirection)
+  }
   xDirection = -xDirection;
 }
 
