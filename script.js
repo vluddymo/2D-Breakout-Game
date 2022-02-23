@@ -235,9 +235,27 @@ function checkForGameOver() {
   if (currentBallPosition[1] >= 0) return;
   clearInterval(timerId);
   alert("Game Over");
+  presentScore();
 }
 function checkForGameWon(){
   if (blocks.length > 0) return;
   alert("You Won!");
   clearInterval(timerId)
+  presentScore()
+}
+
+function presentScore(){
+  const finishDisplay = document.createElement("div")
+  const restartButton = document.createElement("button");
+  const finalScore = document.createElement("div");
+  restartButton.classList.add("restart")
+  finalScore.classList.add("final_score")
+  finishDisplay.classList.add("finish")
+  restartButton.innerHTML = "restart";
+  finalScore.innerHTML = score;
+  finishDisplay.append(finalScore, restartButton);
+  while (grid.firstChild) {
+    grid.removeChild(grid.lastChild)
+  } 
+  grid.appendChild(finishDisplay)
 }
