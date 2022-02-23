@@ -1,4 +1,5 @@
 const grid = document.querySelector(".grid");
+const scoreDisplay = document.querySelector(".score");
 
 const BOARD_WIDTH = 560;
 const BOARD_HEIGHT = 300;
@@ -11,6 +12,11 @@ const BALL_START = [270, 32];
 
 const USER_START = 230;
 const USER_Y_TRESHOLD = 30;
+
+const BLOCK_REWARD = 100;
+
+let score = 0;
+let multiplier = 1;
 
 let timerId;
 
@@ -131,6 +137,7 @@ function checkForCollisions() {
   checkForWallCollisions();
   checkForUserCollision();
   checkForGameOver();
+  checkForGameWon();
 }
 
 function returnCollisionCase() {
@@ -160,11 +167,13 @@ function handleCollisionAction(i) {
   const allBlocks = Array.from(document.querySelectorAll(".block"));
   allBlocks[i].classList.remove("block");
   blocks.splice(i, 1);
+  score = score + (multiplier * BLOCK_REWARD)
+  scoreDisplay.innerHTML = score;
+  multiplier = multiplier + multiplier;
 }
 
 function checkForBlockCollisions() {
   if (currentBallPosition[1] + BALL_DIAMETER < 210) return;
-  if (blocks.length == 0) return alert("You Won!")
   if (returnCollisionCase() == undefined) return;
 
   switch (returnCollisionCase().case) {
@@ -210,8 +219,10 @@ function userCollisionGuardClause() {
 
 function bounceOffUser() {
   // Deflection handling
-  if (currentBallPosition[1] === USER_Y_TRESHOLD)
-    return (yDirection = -yDirection);
+  if (currentBallPosition[1] === USER_Y_TRESHOLD) {
+    multiplier = 1;
+    return (yDirection = -yDirection)
+  }
   xDirection = -xDirection;
 }
 
@@ -223,5 +234,27 @@ function checkForUserCollision() {
 function checkForGameOver() {
   if (currentBallPosition[1] >= 0) return;
   clearInterval(timerId);
-  alert("Game Over");
+  presentScore();
+}
+function checkForGameWon(){
+  if (blocks.length > 0) return;
+  clearInterval(timerId)
+  presentScore()
+}
+
+function presentScore(){
+  const finishDisplay = document.createElement("div")
+  const restartButton = document.createElement("button");
+  const finalScore = document.createElement("div");
+  restartButton.classList.add("restart")
+  finalScore.classList.add("final_score")
+  finishDisplay.classList.add("finish")
+  restartButton.innerHTML = "restart";
+  restartButton.addEventListener("click", () => document.location.reload())
+  finalScore.innerHTML = score;
+  finishDisplay.append(finalScore, restartButton);
+  while (grid.firstChild) {
+    grid.removeChild(grid.lastChild)
+  } 
+  grid.appendChild(finishDisplay)
 }
