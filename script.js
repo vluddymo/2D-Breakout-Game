@@ -137,6 +137,7 @@ function checkForCollisions() {
   checkForWallCollisions();
   checkForUserCollision();
   checkForGameOver();
+  checkForGameWon();
 }
 
 function returnCollisionCase() {
@@ -169,12 +170,10 @@ function handleCollisionAction(i) {
   score = score + (multiplier * BLOCK_REWARD)
   scoreDisplay.innerHTML = score;
   multiplier = multiplier + multiplier;
-
 }
 
 function checkForBlockCollisions() {
   if (currentBallPosition[1] + BALL_DIAMETER < 210) return;
-  if (blocks.length == 0) return alert("You Won!")
   if (returnCollisionCase() == undefined) return;
 
   switch (returnCollisionCase().case) {
@@ -236,4 +235,9 @@ function checkForGameOver() {
   if (currentBallPosition[1] >= 0) return;
   clearInterval(timerId);
   alert("Game Over");
+}
+function checkForGameWon(){
+  if (blocks.length > 0) return;
+  alert("You Won!");
+  clearInterval(timerId)
 }
