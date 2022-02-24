@@ -130,7 +130,7 @@ function moveBall() {
   checkForCollisions();
 }
 
-timerId = setInterval(moveBall, 30);
+timerId = setInterval(moveBall, 20);
 
 function checkForCollisions() {
   checkForBlockCollisions();
@@ -234,25 +234,30 @@ function checkForUserCollision() {
 function checkForGameOver() {
   if (currentBallPosition[1] >= 0) return;
   clearInterval(timerId);
-  presentScore();
+  const gameOverDisplay = document.createElement("div");
+  presentScore("Game Over! 😒");
 }
 function checkForGameWon(){
   if (blocks.length > 0) return;
   clearInterval(timerId)
-  presentScore()
+  presentScore("Congratulations! 🤩")
 }
 
-function presentScore(){
+function presentScore(outcome){
   const finishDisplay = document.createElement("div")
   const restartButton = document.createElement("button");
   const finalScore = document.createElement("div");
+  const exclamation = document.createElement("div");
+  exclamation.classList.add("exclamation")
   restartButton.classList.add("restart")
   finalScore.classList.add("final_score")
+  finalScore.appendChild(exclamation);
   finishDisplay.classList.add("finish")
+  exclamation.innerHTML = outcome;
   restartButton.innerHTML = "restart";
   restartButton.addEventListener("click", () => document.location.reload())
-  finalScore.innerHTML = score;
-  finishDisplay.append(finalScore, restartButton);
+  finalScore.innerHTML = "Score: " + score;
+  finishDisplay.append(exclamation, finalScore, restartButton);
   while (grid.firstChild) {
     grid.removeChild(grid.lastChild)
   } 
