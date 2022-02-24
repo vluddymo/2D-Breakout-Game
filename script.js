@@ -247,7 +247,7 @@ function presentScore(outcome){
   const finishDisplay = document.createElement("div")
   const restartButton = document.createElement("button");
   const finalScore = document.createElement("div");
-  const exclamation = document.createElement("h1");
+  const exclamation = document.createElement("div");
   exclamation.classList.add("exclamation")
   restartButton.classList.add("restart")
   finalScore.classList.add("final_score")
