@@ -37,6 +37,10 @@ h1 {
   left: calc(50% - (562px / 2));
   background-color: #fff8dc;
   position: absolute;
+  border: 6px solid #b100dd;
+  border-radius: 3px;
+  box-shadow: -4px -4px 12px rgb(255, 255, 255), 4px 4px 12px rgb(255, 255, 255);
+
 }
 
 .finish {
@@ -67,7 +71,7 @@ h1 {
   font-size: 1.5rem;
   border-radius: 50px;
   border-color: black;
-  background-color: rgb(177, 0, 221);
+  background-color: #b100dd;
 }
 
 .block {
