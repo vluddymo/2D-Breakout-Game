@@ -9,9 +9,11 @@ const BLOCK_HEIGHT = 20;
 
 const BALL_DIAMETER = 22;
 const BALL_START = [270, 32];
+const BALL_PACE = 2;
 
 const USER_START = 230;
 const USER_Y_TRESHOLD = 30;
+const USER_PACE = 10;
 
 const BLOCK_REWARD = 100;
 
@@ -20,8 +22,8 @@ let multiplier = 1;
 
 let timerId;
 
-let xDirection = 2;
-let yDirection = 2;
+let xDirection = BALL_PACE;
+let yDirection = BALL_PACE;
 
 // up + right = 6 || up +left = 2 || down +right = -2 || down + left = -6
 let directionCode;
@@ -93,13 +95,13 @@ function moveUser(e) {
   switch (e.key) {
     case "ArrowLeft":
       if (currentPosition > 0) {
-        currentPosition -= 10;
+        currentPosition -= USER_PACE;
         drawUser();
       }
       break;
     case "ArrowRight":
       if (currentPosition < BOARD_WIDTH - BLOCK_WIDTH) {
-        currentPosition += 10;
+        currentPosition += USER_PACE;
         drawUser();
       }
       break;
@@ -167,7 +169,7 @@ function handleCollisionAction(i) {
   const allBlocks = Array.from(document.querySelectorAll(".block"));
   allBlocks[i].classList.remove("block");
   blocks.splice(i, 1);
-  score = score + (multiplier * BLOCK_REWARD)
+  score = score + multiplier * BLOCK_REWARD;
   scoreDisplay.innerHTML = score;
   multiplier = multiplier + multiplier;
 }
@@ -221,7 +223,7 @@ function bounceOffUser() {
   // Deflection handling
   if (currentBallPosition[1] === USER_Y_TRESHOLD) {
     multiplier = 1;
-    return (yDirection = -yDirection)
+    return (yDirection = -yDirection);
   }
   xDirection = -xDirection;
 }
@@ -237,29 +239,34 @@ function checkForGameOver() {
   const gameOverDisplay = document.createElement("div");
   presentScore("Game Over! 😒");
 }
-function checkForGameWon(){
+function checkForGameWon() {
   if (blocks.length > 0) return;
-  clearInterval(timerId)
-  presentScore("Congratulations! 🤩")
+  clearInterval(timerId);
+  presentScore("Congratulations! 🤩");
 }
 
-function presentScore(outcome){
-  const finishDisplay = document.createElement("div")
+function presentScore(outcome) {
+  const finishDisplay = document.createElement("div");
   const restartButton = document.createElement("button");
   const finalScore = document.createElement("div");
   const exclamation = document.createElement("div");
-  exclamation.classList.add("exclamation")
-  restartButton.classList.add("restart")
-  finalScore.classList.add("final_score")
+  exclamation.classList.add("exclamation");
+  restartButton.classList.add("restart");
+  finalScore.classList.add("final_score");
   finalScore.appendChild(exclamation);
-  finishDisplay.classList.add("finish")
+  finishDisplay.classList.add("finish");
   exclamation.innerHTML = outcome;
   restartButton.innerHTML = "restart";
-  restartButton.addEventListener("click", () => document.location.reload())
+  restartButton.addEventListener("click", () => document.location.reload());
   finalScore.innerHTML = "Score: " + score;
   finishDisplay.append(exclamation, finalScore, restartButton);
   while (grid.firstChild) {
-    grid.removeChild(grid.lastChild)
-  } 
-  grid.appendChild(finishDisplay)
+    grid.removeChild(grid.lastChild);
+  }
+  grid.appendChild(finishDisplay);
+
+  document.addEventListener("keydown", (e) => {
+    console.log(e.key);
+    if (e.key == "Enter" || e.key == " ") document.location.reload();
+  });
 }
