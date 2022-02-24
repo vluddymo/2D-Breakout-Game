@@ -63,10 +63,11 @@ h1 {
 .restart {
   width: 100px;
   height: 40px;
+  margin-bottom: 1rem;
   font-size: 1.5rem;
   border-radius: 50px;
   border-color: black;
-  background-color: rgb(161, 54, 54);
+  background-color: rgb(177, 0, 221);
 }
 
 .block {
@@ -104,6 +105,11 @@ h1 {
 
 h2 {
   text-align: center;
-  margin: 350px auto 0 auto;
-  color: #9e72e4;
+  margin: 400px auto 0 auto;
+  background-color: #de58ff;
+  color: white;
+  font-size: 3rem;
+  width: 250px;
+  border: 1px solid white;
+  border-radius: 15px;
 }
