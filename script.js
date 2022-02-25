@@ -184,24 +184,16 @@ function checkForBlockCollisions() {
       handleCollisionAction(returnCollisionCase().block);
       break;
     default:
-      console.log("nothing happened");
       break;
   }
 }
 
 function checkForWallCollisions() {
-  // const isCrashedInLeftWall = currentBallPosition[0] < 0;
-  // const isCrashedInRightWall =
-  //   currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER;
-  // const isCrashedInTopWall =
-  //   currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER;
-
   if (
-    !(currentBallPosition[0] < 0) &&
+    !(currentBallPosition[0] < 0) &&                                 // Guard-clause : If no crash with left, right or top wall => exit function
     !(currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER) &&
     !(currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER)
-  )
-    return;
+  ) return;
   if (!(currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER))
     return (xDirection = -xDirection);
   yDirection = -yDirection;
