@@ -1,3 +1,5 @@
+import emptyContainer from "./modules/utils.mjs";
+
 const grid = document.querySelector(".grid");
 const scoreDisplay = document.querySelector(".score");
 
@@ -190,17 +192,17 @@ function checkForBlockCollisions() {
 
 function checkForWallCollisions() {
   if (
-    !(currentBallPosition[0] < 0) &&                                 // Guard-clause : If no crash with left, right or top wall => exit function
+    !(currentBallPosition[0] < 0) && // Guard-clause : If no crash with left, right or top wall => exit function
     !(currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER) &&
     !(currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER)
-  ) return;
+  )
+    return;
   if (!(currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER))
     return (xDirection = -xDirection);
   yDirection = -yDirection;
 }
 
 function userCollisionGuardClause() {
-  // Is ball within user block x-coordinates ?
   const isOnUserBlock =
     currentBallPosition[0] + BALL_DIAMETER >= currentPosition &&
     currentBallPosition[0] <= currentPosition + BLOCK_WIDTH;
@@ -248,9 +250,7 @@ function presentScore(outcome) {
   restartButton.addEventListener("click", () => document.location.reload());
   finalScore.innerHTML = "Score: " + score;
   finishDisplay.append(exclamation, finalScore, restartButton);
-  while (grid.firstChild) {
-    grid.removeChild(grid.lastChild);
-  }
+  emptyContainer(grid);
   grid.appendChild(finishDisplay);
 
   document.addEventListener("keydown", (e) => {
