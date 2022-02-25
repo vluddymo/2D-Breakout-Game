@@ -130,6 +130,7 @@ function moveBall() {
   calculateDirectionCode();
   drawBall();
   checkForCollisions();
+  checkForGameEnd();
 }
 
 timerId = setInterval(moveBall, 20);
@@ -138,8 +139,6 @@ function checkForCollisions() {
   checkForBlockCollisions();
   checkForWallCollisions();
   checkForUserCollision();
-  checkForGameOver();
-  checkForGameWon();
 }
 
 function returnCollisionCase() {
@@ -150,7 +149,6 @@ function returnCollisionCase() {
       currentBallPosition[1] + BALL_DIAMETER > blocks[i].bottomLeft[1] &&
       currentBallPosition[1] < blocks[i].topLeft[1]
     ) {
-      console.log("right_left");
       return { case: "right_left", block: i };
     } else if (
       currentBallPosition[0] + BALL_DIAMETER >= blocks[i].bottomLeft[0] &&
@@ -158,20 +156,18 @@ function returnCollisionCase() {
       (currentBallPosition[1] + BALL_DIAMETER == blocks[i].bottomLeft[1] ||
         currentBallPosition[1] == blocks[i].topLeft[1])
     ) {
-      console.log("top_bottom");
       return { case: "top_bottom", block: i };
     }
   }
 }
 
 function handleCollisionAction(i) {
-  console.log(`collision with block ${i}`);
   const allBlocks = Array.from(document.querySelectorAll(".block"));
   allBlocks[i].classList.remove("block");
   blocks.splice(i, 1);
   score = score + multiplier * BLOCK_REWARD;
+  multiplier += multiplier;
   scoreDisplay.innerHTML = score;
-  multiplier = multiplier + multiplier;
 }
 
 function checkForBlockCollisions() {
@@ -194,15 +190,20 @@ function checkForBlockCollisions() {
 }
 
 function checkForWallCollisions() {
-  const isCrashedInLeftWall = currentBallPosition[0] < 0;
-  const isCrashedInRightWall =
-    currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER;
-  const isCrashedInTopWall =
-    currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER;
+  // const isCrashedInLeftWall = currentBallPosition[0] < 0;
+  // const isCrashedInRightWall =
+  //   currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER;
+  // const isCrashedInTopWall =
+  //   currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER;
 
-  if (!isCrashedInLeftWall && !isCrashedInRightWall && !isCrashedInTopWall)
+  if (
+    !(currentBallPosition[0] < 0) &&
+    !(currentBallPosition[0] >= BOARD_WIDTH - BALL_DIAMETER) &&
+    !(currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER)
+  )
     return;
-  if (!isCrashedInTopWall) return (xDirection = -xDirection);
+  if (!(currentBallPosition[1] >= BOARD_HEIGHT - BALL_DIAMETER))
+    return (xDirection = -xDirection);
   yDirection = -yDirection;
 }
 
@@ -233,19 +234,14 @@ function checkForUserCollision() {
   bounceOffUser();
 }
 
-function checkForGameOver() {
-  if (currentBallPosition[1] >= 0) return;
-  clearInterval(timerId);
-  const gameOverDisplay = document.createElement("div");
-  presentScore("Game Over! 😒");
-}
-function checkForGameWon() {
-  if (blocks.length > 0) return;
-  clearInterval(timerId);
-  presentScore("Congratulations! 🤩");
+function checkForGameEnd() {
+  if (currentBallPosition[1] > 0 && blocks.length != 0) return;
+  if (currentBallPosition[1] <= 0) return presentScore("😕 Game Over! 😒");
+  return presentScore("🤩 Congratulations! 🤩");
 }
 
 function presentScore(outcome) {
+  clearInterval(timerId);
   const finishDisplay = document.createElement("div");
   const restartButton = document.createElement("button");
   const finalScore = document.createElement("div");
