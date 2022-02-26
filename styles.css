@@ -5,10 +5,11 @@ body {
   background: black;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
-  background-image: url("https://img.besthqwallpapers.com/Uploads/18-3-2018/44699/neon-mountain-landscape-neon-light-lines-purple-grid-electro-music-synthpop.jpg");
+  background-image: url("./images/neon-grid.jpeg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  overflow-y: hidden;
 }
 
 h1 {
@@ -40,7 +41,6 @@ h1 {
   border: 6px solid #b100dd;
   border-radius: 3px;
   box-shadow: -4px -4px 12px rgb(255, 255, 255), 4px 4px 12px rgb(255, 255, 255);
-
 }
 
 .finish {
