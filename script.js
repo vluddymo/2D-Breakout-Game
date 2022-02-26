@@ -1,13 +1,12 @@
-import emptyContainer from "./modules/utils.mjs";
+import { blocks } from "./modules/levels/level_1.mjs";
+import {emptyContainer, addBlock} from "./modules/utils/utils.mjs";
+import { BLOCK_WIDTH } from "./modules/constants/constants.mjs";
 
 const grid = document.querySelector(".grid");
 const scoreDisplay = document.querySelector(".score");
 
 const BOARD_WIDTH = 560;
 const BOARD_HEIGHT = 300;
-
-const BLOCK_WIDTH = 100;
-const BLOCK_HEIGHT = 20;
 
 const BALL_DIAMETER = 22;
 const BALL_START = [270, 32];
@@ -35,50 +34,9 @@ function calculateDirectionCode() {
 }
 
 let currentPosition = USER_START;
-
 let currentBallPosition = BALL_START;
 
-// Create Block
-class Block {
-  constructor(xAxis, yAxis) {
-    this.bottomLeft = [xAxis, yAxis];
-    this.bottomRight = [xAxis + BLOCK_WIDTH, yAxis];
-    this.topLeft = [xAxis, yAxis + BLOCK_HEIGHT];
-    this.topRight = [xAxis + BLOCK_WIDTH, yAxis + BLOCK_HEIGHT];
-  }
-}
-
-//All my Blocks
-const blocks = [
-  new Block(10, 270),
-  new Block(120, 270),
-  new Block(230, 270),
-  new Block(340, 270),
-  new Block(450, 270),
-  new Block(10, 240),
-  new Block(120, 240),
-  new Block(230, 240),
-  new Block(340, 240),
-  new Block(450, 240),
-  new Block(10, 210),
-  new Block(120, 210),
-  new Block(230, 210),
-  new Block(340, 210),
-  new Block(450, 210),
-];
-
-// Draw my Block
-function addBlock() {
-  for (let i = 0; i < blocks.length; i++) {
-    const block = document.createElement("div");
-    block.classList.add("block");
-    block.style.left = blocks[i].bottomLeft[0] + "px";
-    block.style.bottom = blocks[i].bottomLeft[1] + "px";
-    grid.appendChild(block);
-  }
-}
-
-addBlock();
+addBlock(grid, blocks);
 
 // Add user
 const user = document.createElement("div");
@@ -86,13 +44,13 @@ user.classList.add("user");
 drawUser();
 grid.appendChild(user);
 
+
 // Draw user
 function drawUser() {
   user.style.left = currentPosition + "px";
 }
 
 // Move user
-
 function moveUser(e) {
   switch (e.key) {
     case "ArrowLeft":
@@ -109,8 +67,6 @@ function moveUser(e) {
       break;
   }
 }
-
-stopI
 
 document.addEventListener("keydown", (e) => moveUser(e));
 
