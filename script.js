@@ -110,7 +110,9 @@ function moveUser(e) {
   }
 }
 
-document.addEventListener("keydown", moveUser);
+stopI
+
+document.addEventListener("keydown", (e) => moveUser(e));
 
 // Add ball
 const ball = document.createElement("div");
